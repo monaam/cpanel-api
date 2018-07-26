@@ -289,11 +289,11 @@ Class Cpanel extends xmlapi {
             $result = json_decode($json, TRUE);
         }
 
-        if (isset($result['data'])) {
+        if (!intval($result['event']['result'])) {
             $data = $result['data'];
-            if (is_array($data)) {
-                $reason = (string)$data['reason'];
-                $status = (string)$data['result'];
+            if (!is_array($data)) {
+                $reason = isset($data['reason']) ? (string)$data['reason'] : '';
+                $status = isset($data['result']) ? (string)$data['result'] : '';
 
                 if (mb_strpos($reason, ')') !== false) {
                     $reason = ltrim(strstr($reason, ')'), ') ');
@@ -336,7 +336,7 @@ Class Cpanel extends xmlapi {
                 return array('reason' => $reason, 'result' => (int)$data);
             }
         } else {
-            return $result;
+            return $result['data'];
         }
     }
 
